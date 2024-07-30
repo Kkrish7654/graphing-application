@@ -67,6 +67,7 @@ const GraphCanvas = ({ dataList }: { dataList: DataPoint[] }) => {
   };
 
   const options = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onClick: function (e: any, elements: any) {
       if (elements.length > 0) {
         const { index } = elements[0];
