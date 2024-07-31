@@ -48,13 +48,14 @@ const GraphCanvas = ({
     y: number;
   } | null>(null);
 
+  // -------------- Add Data Point -------------- //
   const addDataPoint = (point: { id: number; x: number; y: number }) => {
     setDataPoints((prevPoints) => [...prevPoints, point]);
   };
 
+  // -------------- Remove Data Point -------------- //
   const removeDataPoint = (point: { id: number; x: number; y: number }) => {
     setDataPoints((prev) => prev.filter((p) => p.id !== point.id));
-
     const pointExists = dataList.some(
       (p) => p.x === point.x && p.y === point.y
     );
@@ -65,6 +66,7 @@ const GraphCanvas = ({
     setPopup(false);
   };
 
+  // -------------- Update Data Point -------------- //
   const updateDataPoint = (point: { id: number; x: number; y: number }) => {
     setDataPoints((prev) => prev.map((p) => (p.id === point.id ? point : p)));
 
@@ -75,15 +77,16 @@ const GraphCanvas = ({
     if (!pointExists) {
       setDataList((prev: any) => [...prev, index]);
     }
-
     setPopup(false);
   };
 
+  // -------------- Droped Item -------------- //
   const [, drop] = useDrop(() => ({
     accept: "DATAPOINT",
     drop: (item: { id: number; x: number; y: number }) => addDataPoint(item),
   }));
 
+  // --------------------- Chart Options --------------------- //
   const data = {
     labels: dataPoints.map((point) => point.x),
     datasets: [
@@ -108,8 +111,10 @@ const GraphCanvas = ({
       }
     },
   };
+  // --------------------- Chart Options --------------------- //
 
   return (
+    // ===================== Popup Section =================== //
     <div>
       {popup && (
         <div
@@ -158,6 +163,7 @@ const GraphCanvas = ({
         </div>
       )}
 
+      {/* ================Chart Section ==================*/}
       <select onChange={(e) => setChartType(e.target.value as "bar" | "line")}>
         <option value="line">Line</option>
         <option value="bar">Bar</option>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDrag } from "react-dnd";
 
+// ---------------------------- Dragable Data Point ---------------------------- //
 const DataPoint = ({
   id,
   x,
@@ -37,6 +38,7 @@ const DataPoint = ({
   );
 };
 
+// ------------------------------- Data Point List ------------------------------------ //
 const DataPointList = ({
   dataPoints,
   setDataPoints,
@@ -47,8 +49,6 @@ const DataPointList = ({
   function dropPoint(item: { id: number; x: number; y: number }) {
     setDataPoints((prev: any) => prev.filter((p: any) => p.id !== item.id));
   }
-
-
   return (
     <div>
       <table>
