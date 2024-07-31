@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState } from "react";
 import { useDrop } from "react-dnd";
 import { Bar, Line } from "react-chartjs-2";
 import {
@@ -23,15 +24,29 @@ ChartJS.register(
   CategoryScale
 );
 
-const GraphCanvas = ({ dataList }: { dataList: DataPoint[] }) => {
+const GraphCanvas = ({
+  dataList,
+  setDataList,
+}: {
+  dataList: DataPoint[];
+  setDataList: any;
+}) => {
   const [dataPoints, setDataPoints] = useState<
     { id: number; x: number; y: number }[]
   >([]);
 
   const [chartType, setChartType] = useState<"line" | "bar">("line");
-  const [index, setIndex] = useState<{ id: number; x: number; y: number } | null>(null);
+  const [index, setIndex] = useState<{
+    id: number;
+    x: number;
+    y: number;
+  } | null>(null);
   const [popup, setPopup] = useState<boolean>(false);
-  const [selectedPoint, setSelectedPoint] = useState<{ id: number; x: number; y: number } | null>(null);
+  const [selectedPoint, setSelectedPoint] = useState<{
+    id: number;
+    x: number;
+    y: number;
+  } | null>(null);
 
   const addDataPoint = (point: { id: number; x: number; y: number }) => {
     setDataPoints((prevPoints) => [...prevPoints, point]);
@@ -39,11 +54,28 @@ const GraphCanvas = ({ dataList }: { dataList: DataPoint[] }) => {
 
   const removeDataPoint = (point: { id: number; x: number; y: number }) => {
     setDataPoints((prev) => prev.filter((p) => p.id !== point.id));
+
+    const pointExists = dataList.some(
+      (p) => p.x === point.x && p.y === point.y
+    );
+
+    if (!pointExists) {
+      setDataList((prev: any) => [...prev, point]);
+    }
     setPopup(false);
   };
 
   const updateDataPoint = (point: { id: number; x: number; y: number }) => {
     setDataPoints((prev) => prev.map((p) => (p.id === point.id ? point : p)));
+
+    const pointExists = dataList.some(
+      (p) => p.x === index?.x && p.y === index?.y
+    );
+
+    if (!pointExists) {
+      setDataList((prev: any) => [...prev, index]);
+    }
+
     setPopup(false);
   };
 
@@ -68,7 +100,7 @@ const GraphCanvas = ({ dataList }: { dataList: DataPoint[] }) => {
 
   const options = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onClick: function (e: any, elements: any) {
+    onClick: function (_e: any, elements: any) {
       if (elements.length > 0) {
         const { index } = elements[0];
         setIndex(dataPoints[index]);
@@ -78,7 +110,7 @@ const GraphCanvas = ({ dataList }: { dataList: DataPoint[] }) => {
   };
 
   return (
-    <>
+    <div>
       {popup && (
         <div
           style={{
@@ -134,13 +166,23 @@ const GraphCanvas = ({ dataList }: { dataList: DataPoint[] }) => {
         ref={drop}
         style={{ width: "500px", height: "400px", border: "1px solid black" }}
       >
-        {chartType === "line" ? (
-          <Line data={data} options={options} />
-        ) : chartType === "bar" ? (
-          <Bar data={data} options={options} />
-        ) : null}
+        {dataPoints.length === 0 ? (
+          <p>Drop data points here</p>
+        ) : (
+          <>
+            <div>
+              {chartType === "line" ? (
+                <Line data={data} options={options} />
+              ) : chartType === "bar" ? (
+                <Bar data={data} options={options} />
+              ) : (
+                <></>
+              )}
+            </div>
+          </>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

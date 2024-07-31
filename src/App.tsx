@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { DndProvider } from "react-dnd";
 import DataPointList from "./components/Datapoint";
 import GraphCanvas from "./components/GraphCanvas";
@@ -29,11 +29,59 @@ const dataPoints: DataPoint[] = [
 ];
 
 const App = () => {
+  const [list, setList] =
+    useState<{ id: number; x: number; y: number }[]>(dataPoints);
+
   return (
     <>
       <DndProvider backend={HTML5Backend}>
-        <GraphCanvas dataList={dataPoints} />
-        <DataPointList dataPoints={dataPoints} />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            width: "100%",
+            height: "100%",
+            gap: "10rem",
+          }}
+        >
+          <DataPointList dataPoints={list} setDataPoints={setList} />
+          <GraphCanvas dataList={list} setDataList={setList} />
+
+          <section>
+            <h1 style={{ color: "red" }}>Graphing Application</h1>
+
+            <ul
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <li>Drag data points from the left table to the right graph.</li>
+              <li>
+                Click on Point in the graph to perform update and delete
+                actions.
+              </li>
+              <li>
+                Once you click on a point, a popup will appear with options to
+                either update or delete the selected point.
+              </li>
+              <li>
+                The selected point will be removed from the graph. If the point
+                does not already exist in the available data points list, it
+                will be added back to this list.
+              </li>
+              <li>
+                The graph will update in real-time as you add or remove points.
+              </li>
+              <li>
+                The List will be update correctly as you add or remove points or
+                update points.
+              </li>
+            </ul>
+          </section>
+        </div>
       </DndProvider>
     </>
   );

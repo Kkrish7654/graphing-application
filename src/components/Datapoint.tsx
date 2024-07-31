@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDrag } from "react-dnd";
 
 const DataPoint = ({
   id,
   x,
   y,
+  dropPoint,
 }: {
   id: number;
   x: number;
@@ -17,8 +18,7 @@ const DataPoint = ({
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
       if (item && dropResult) {
-        console.log(`dropped ${item.x}, ${item.y}`);
-        // dropPoint(item);
+        dropPoint(item);
       }
     },
     collect: (monitor) => ({
@@ -27,35 +27,49 @@ const DataPoint = ({
   }));
 
   return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      ({x}, {y})
-    </div>
+    <tr
+      ref={drag}
+      style={{ opacity: isDragging ? 0.5 : 1, border: "1px solid black" }}
+    >
+      <td style={{ border: "1px solid black", padding: "5px" }}>{x}</td>
+      <td style={{ border: "1px solid black", padding: "5px" }}>{y}</td>
+    </tr>
   );
 };
 
 const DataPointList = ({
   dataPoints,
+  setDataPoints,
 }: {
   dataPoints: { id: number; x: number; y: number }[];
+  setDataPoints: any;
 }) => {
-  const [list, setList] =
-    useState<{ id: number; x: number; y: number }[]>(dataPoints);
-
-  function dropPoint(item: { x: number; y: number }) {
-    setList((prev) => prev.filter((p) => p.x !== item.x && p.y !== item.y));
+  function dropPoint(item: { id: number; x: number; y: number }) {
+    setDataPoints((prev: any) => prev.filter((p: any) => p.id !== item.id));
   }
+
 
   return (
     <div>
-      {list?.map((point, index: number) => (
-        <DataPoint
-          key={index}
-          id={point.id}
-          x={point.x}
-          y={point.y}
-          dropPoint={dropPoint}
-        />
-      ))}
+      <table>
+        <thead>
+          <tr>
+            <th>X</th>
+            <th>Y</th>
+          </tr>
+        </thead>
+        <tbody>
+          {dataPoints.map((point) => (
+            <DataPoint
+              key={point.id}
+              id={point.id}
+              x={point.x}
+              y={point.y}
+              dropPoint={dropPoint}
+            />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
